@@ -35,7 +35,8 @@ crosshair.src = "./images/crosshair2.0.png";
 let myCircle = {
     x: 200,
     y: 200,
-    crosshair,
+    radius: 20,
+    crosshair: crosshair,
   
 };
 
@@ -58,25 +59,17 @@ function drawCircle() {
     ctx.drawImage(backgroundImage, 0, 0, width, height); // Draw the background image
 
     // Draw player circle
-    ctx.beginPath();
-    ctx.arc(myCircle.x, myCircle.y, myCircle.radius, 0, 2 * Math.PI);
-    ctx.fillStyle = myCircle.color;
-    ctx.fill();
-
-    // // Draw targets
-    // targets.forEach(target => {
-    //     const scale = 1 / target.z;
-    //     ctx.beginPath();
-    //     ctx.arc(target.x, target.y, target.radius * scale, 0, 2 * Math.PI);
-    //     ctx.fillStyle = target.color;
-    //     ctx.fill();
-    // });
+    const playerWidth = myCircle.radius * 2;
+    const playerHeight = myCircle.radius * 2;
+    ctx.drawImage(myCircle.crosshair, myCircle.x - myCircle.radius, myCircle.y - myCircle.radius, playerWidth, playerHeight);
+    
     // Draw targets as images
     targets.forEach((target, index) => {
         const scale = 1 / target.z;
         const img = targetImages[index]; // Get the corresponding image
         ctx.drawImage(img, target.x - (target.radius * scale) / 2, target.y - (target.radius * scale) / 2, target.radius * scale, target.radius * scale);
     });
+    requestAnimationFrame(drawCircle);
 }
 let imagesLoaded = 0;
 
@@ -100,9 +93,6 @@ function getCoordinates(event) {
 
     myCircle.x = x;
     myCircle.y = y;
-    drawCircle();
-
-    requestAnimationFrame(myCircle);
 }
 
 function changeRadius(event) {
