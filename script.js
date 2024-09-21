@@ -58,17 +58,18 @@ function drawCircle() {
     // Draw background image
     ctx.drawImage(backgroundImage, 0, 0, width, height); // Draw the background image
 
-    // Draw player circle
-    const playerWidth = myCircle.radius * 2;
-    const playerHeight = myCircle.radius * 2;
-    ctx.drawImage(myCircle.crosshair, myCircle.x - myCircle.radius, myCircle.y - myCircle.radius, playerWidth, playerHeight);
-    
     // Draw targets as images
     targets.forEach((target, index) => {
         const scale = 1 / target.z;
         const img = targetImages[index]; // Get the corresponding image
         ctx.drawImage(img, target.x - (target.radius * scale) / 2, target.y - (target.radius * scale) / 2, target.radius * scale, target.radius * scale);
     });
+
+    // Draw player circle
+    const playerWidth = myCircle.radius * 2;
+    const playerHeight = myCircle.radius * 2;
+    ctx.drawImage(myCircle.crosshair, myCircle.x - myCircle.radius, myCircle.y - myCircle.radius, playerWidth, playerHeight);
+    
     requestAnimationFrame(drawCircle);
 }
 let imagesLoaded = 0;
