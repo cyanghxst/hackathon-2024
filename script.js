@@ -1,10 +1,15 @@
+let backgroundImage = new Image();
+backgroundImage.src = "./images/bgTest.png"; // Ensure the path is correct
+
 const $ = id => document.getElementById(id);
 const ctx = $("myCanvas").getContext("2d");
 
 $("myCanvas").addEventListener("mousemove", getCoordinates);
 $("myCanvas").addEventListener("click", shoot);
 document.addEventListener("keydown", changeRadius);
-window.addEventListener("load", drawCircle);
+
+// Correct the initialization: call drawCircle only after the image loads
+backgroundImage.onload = initializeGame;
 
 const width = $("myCanvas").width;
 const height = $("myCanvas").height;
@@ -17,13 +22,21 @@ let myCircle = {
 };
 
 let targets = [
-    { x: 400, y: 300, radius: 30, z: 1, color: "red" },
-    { x: 600, y: 400, radius: 40, z: 2, color: "blue" },
-    { x: 800, y: 200, radius: 50, z: 3, color: "green" },
+    { x: 440, y: 360, radius: 100, z: 1, color: "red" },
+    { x: 640, y: 360, radius: 100, z: 2, color: "blue" },
+    { x: 840, y: 360, radius: 100, z: 3, color: "green" },
 ];
+
+// Function to initialize the game (you can populate targets randomly here)
+function initializeGame() {
+    drawCircle(); // Call drawCircle after targets are initialized
+}
 
 function drawCircle() {
     ctx.clearRect(0, 0, width, height);
+
+    // Draw background image
+    ctx.drawImage(backgroundImage, 0, 0, width, height); // Draw the background image
 
     // Draw player circle
     ctx.beginPath();
@@ -51,12 +64,12 @@ function getCoordinates(event) {
 }
 
 function changeRadius(event) {
-    if (event.key == "ArrowUp") {
+    if (event.key === "ArrowUp") {
         myCircle.radius++;
         drawCircle();
     }
 
-    if (event.key == "ArrowDown") {
+    if (event.key === "ArrowDown") {
         myCircle.radius--;
         drawCircle();
     }
