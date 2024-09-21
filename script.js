@@ -4,6 +4,21 @@ backgroundImage.src = "./images/bgTest.png"; // Ensure the path is correct
 const $ = id => document.getElementById(id);
 const ctx = $("myCanvas").getContext("2d");
 
+
+const targetImage = [];
+const targetImages = [
+    "./images/bottle.png",
+    "./images/bottle.png",
+    "./images/bottle.png"
+];
+
+targetImages.forEach((path, index) => {
+    const image = new Image();
+    image.src = path;
+    targetImages[index] = image;
+});
+
+
 $("myCanvas").addEventListener("mousemove", getCoordinates);
 $("myCanvas").addEventListener("click", shoot);
 document.addEventListener("keydown", changeRadius);
@@ -22,9 +37,9 @@ let myCircle = {
 };
 
 let targets = [
-    { x: 440, y: 360, radius: 100, z: 1, color: "red" },
-    { x: 640, y: 360, radius: 100, z: 1, color: "blue" },
-    { x: 840, y: 360, radius: 100, z: 1, color: "green" },
+    { x: 612, y: 110, radius: 100, z: 1, color: "red" },
+    { x: 612, y: 250, radius: 100, z: 1, color: "blue" },
+    { x: 612, y: 380, radius: 100, z: 1, color: "green" },
 ];
 
 // Function to initialize the game (you can populate targets randomly here)
@@ -39,20 +54,41 @@ function drawCircle() {
     ctx.drawImage(backgroundImage, 0, 0, width, height); // Draw the background image
 
     // Draw player circle
-    // ctx.beginPath();
-    // ctx.arc(myCircle.x, myCircle.y, myCircle.radius, 0, 2 * Math.PI);
-    // ctx.fillStyle = myCircle.color;
-    // ctx.fill();
+    ctx.beginPath();
+    ctx.arc(myCircle.x, myCircle.y, myCircle.radius, 0, 2 * Math.PI);
+    ctx.fillStyle = myCircle.color;
+    ctx.fill();
 
-    // Draw targets
-    targets.forEach(target => {
+    // // Draw targets
+    // targets.forEach(target => {
+    //     const scale = 1 / target.z;
+    //     ctx.beginPath();
+    //     ctx.arc(target.x, target.y, target.radius * scale, 0, 2 * Math.PI);
+    //     ctx.fillStyle = target.color;
+    //     ctx.fill();
+    // });
+    // Draw targets as images
+    targets.forEach((target, index) => {
         const scale = 1 / target.z;
-        ctx.beginPath();
-        ctx.arc(target.x, target.y, target.radius * scale, 0, 2 * Math.PI);
-        ctx.fillStyle = target.color;
-        ctx.fill();
+        const img = targetImages[index]; // Get the corresponding image
+        ctx.drawImage(img, target.x - (target.radius * scale) / 2, target.y - (target.radius * scale) / 2, target.radius * scale, target.radius * scale);
     });
 }
+let imagesLoaded = 0;
+
+targetImages.forEach(img => {
+    img.onload = () => {
+        imagesLoaded++;
+        if (imagesLoaded === targetImages.length) {
+            initializeGame(); // Start the game only when all images are loaded
+        }
+    };
+    img.src = img.src; // Start loading the image
+});
+
+// function strafe {
+
+// }
 
 function getCoordinates(event) {
     let x = event.offsetX;
@@ -83,6 +119,7 @@ function shoot(event) {
         const scale = 1 / target.z;
         if (Math.hypot(mouseX - target.x, mouseY - target.y) < target.radius * scale) {
             console.log("Hit target!", target);
+
             targets.splice(index, 1); // Remove the target
             drawCircle();
         }
