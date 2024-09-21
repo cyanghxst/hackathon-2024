@@ -29,12 +29,16 @@ backgroundImage.onload = initializeGame;
 const width = $("myCanvas").width;
 const height = $("myCanvas").height;
 
+let crosshair = new Image();
+crosshair.src = "./images/crosshair2.0.png";
+
 let myCircle = {
     x: 200,
     y: 200,
-    radius: 10,
-    color: "black",
+    crosshair,
+  
 };
+
 
 let targets = [
     { x: 612, y: 110, radius: 100, z: 1, color: "red" },
@@ -97,6 +101,8 @@ function getCoordinates(event) {
     myCircle.x = x;
     myCircle.y = y;
     drawCircle();
+
+    requestAnimationFrame(myCircle);
 }
 
 function changeRadius(event) {
