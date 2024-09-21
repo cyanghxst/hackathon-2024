@@ -5,8 +5,8 @@ $("myCanvas").addEventListener("mousemove", getCoordinates);
 document.addEventListener("keydown", changeRadius);
 window.addEventListener("load", drawCircle);
 
-const width = ctx.width;
-const height = ctx.height;
+const width = $("myCanvas").width;
+const height = $("myCanvas").height;
 
 let myCircle = {
     x: 200,
