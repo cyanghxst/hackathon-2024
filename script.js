@@ -59,7 +59,7 @@ function drawCircle() {
         target.x += target.speed * target.direction;
 
         // Reverse direction if the target hits the canvas boundaries
-        if (target.x - target.radius < 0 || target.x + target.radius > width) {
+        if (target.x - target.radius < 300 || target.x + target.radius > width - 300) {
             target.direction *= -1;
         }
 
