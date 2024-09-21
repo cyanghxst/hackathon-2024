@@ -39,10 +39,10 @@ function drawCircle() {
     ctx.drawImage(backgroundImage, 0, 0, width, height); // Draw the background image
 
     // Draw player circle
-    ctx.beginPath();
-    ctx.arc(myCircle.x, myCircle.y, myCircle.radius, 0, 2 * Math.PI);
-    ctx.fillStyle = myCircle.color;
-    ctx.fill();
+    // ctx.beginPath();
+    // ctx.arc(myCircle.x, myCircle.y, myCircle.radius, 0, 2 * Math.PI);
+    // ctx.fillStyle = myCircle.color;
+    // ctx.fill();
 
     // Draw targets
     targets.forEach(target => {
