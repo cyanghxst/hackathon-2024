@@ -4,7 +4,6 @@ backgroundImage.src = "./images/bgTest.png"; // Ensure the path is correct
 const $ = id => document.getElementById(id);
 const ctx = $("myCanvas").getContext("2d");
 
-
 const targetImage = [];
 const targetImages = [
     "./images/bottle.png",
@@ -18,12 +17,10 @@ targetImages.forEach((path, index) => {
     targetImages[index] = image;
 });
 
-
 $("myCanvas").addEventListener("mousemove", getCoordinates);
 $("myCanvas").addEventListener("click", shoot);
 document.addEventListener("keydown", changeRadius);
 
-// Correct the initialization: call drawCircle only after the image loads
 backgroundImage.onload = initializeGame;
 
 const width = $("myCanvas").width;
@@ -37,14 +34,12 @@ let myCircle = {
     y: 200,
     radius: 20,
     crosshair: crosshair,
-  
 };
 
-
 let targets = [
-    { x: 612, y: 110, radius: 100, z: 1, color: "red" },
-    { x: 612, y: 250, radius: 100, z: 1, color: "blue" },
-    { x: 612, y: 380, radius: 100, z: 1, color: "green" },
+    { x: 612, y: 110, radius: 100, z: 1, color: "red", speed: 2, direction: 1 },
+    { x: 612, y: 250, radius: 100, z: 1, color: "blue", speed: 3, direction: 1 },
+    { x: 612, y: 380, radius: 100, z: 1, color: "green", speed: 4, direction: 1 },
 ];
 
 // Function to initialize the game (you can populate targets randomly here)
@@ -56,10 +51,19 @@ function drawCircle() {
     ctx.clearRect(0, 0, width, height);
 
     // Draw background image
-    ctx.drawImage(backgroundImage, 0, 0, width, height); // Draw the background image
+    ctx.drawImage(backgroundImage, 0, 0, width, height);
 
-    // Draw targets as images
+    // Move targets horizontally and draw them as images
     targets.forEach((target, index) => {
+        // Update target's position based on its speed and direction
+        target.x += target.speed * target.direction;
+
+        // Reverse direction if the target hits the canvas boundaries
+        if (target.x - target.radius < 0 || target.x + target.radius > width) {
+            target.direction *= -1;
+        }
+
+        // Draw target
         const scale = 1 / target.z;
         const img = targetImages[index]; // Get the corresponding image
         ctx.drawImage(img, target.x - (target.radius * scale) / 2, target.y - (target.radius * scale) / 2, target.radius * scale, target.radius * scale);
@@ -70,8 +74,9 @@ function drawCircle() {
     const playerHeight = myCircle.radius * 2;
     ctx.drawImage(myCircle.crosshair, myCircle.x - myCircle.radius, myCircle.y - myCircle.radius, playerWidth, playerHeight);
     
-    requestAnimationFrame(drawCircle);
+    requestAnimationFrame(drawCircle); // Keep the animation loop going
 }
+
 let imagesLoaded = 0;
 
 targetImages.forEach(img => {
@@ -83,10 +88,6 @@ targetImages.forEach(img => {
     };
     img.src = img.src; // Start loading the image
 });
-
-// function strafe {
-
-// }
 
 function getCoordinates(event) {
     let x = event.offsetX;
