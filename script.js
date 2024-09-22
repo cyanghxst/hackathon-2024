@@ -11,6 +11,11 @@ const shrinkingAnimation = [
     new Image()
 ];
 
+// Click counter
+let clickCounter = 0;
+let clickHit = 0;
+
+
 // Load the shrinking animation frames
 shrinkingAnimation[0].src = "./images/duck_animation1.png";
 shrinkingAnimation[1].src = "./images/duck_animation2.png";
@@ -58,6 +63,13 @@ function initializeGame() {
     drawCircle(); // Call drawCircle after targets are initialized
 }
 
+function HitorMiss() {
+    ctx.font = "40px Helvetica";
+    ctx.fillStyle = "white";
+    ctx.fillText(`Hit: ${clickHit}`, 5, 650);
+    ctx.fillText(`Clicks: ${clickCounter}`, 5, 700);    
+}
+
 function drawCircle() {
     ctx.clearRect(0, 0, width, height);
 
@@ -86,10 +98,10 @@ function drawCircle() {
             const scale = 1 / target.z;
 
             ctx.drawImage(
-                img, 
-                target.x - (target.radius * scale) / 2, 
-                target.y - (target.radius * scale) / 2, 
-                target.radius * scale, 
+                img,
+                target.x - (target.radius * scale) / 2,
+                target.y - (target.radius * scale) / 2,
+                target.radius * scale,
                 target.radius * scale
             );
 
@@ -100,7 +112,6 @@ function drawCircle() {
                 target.animationDone = true; // Animation is done
             }
         }
-
         // Remove the target after animation is done
         if (target.animationDone) {
             targets.splice(index, 1);
@@ -111,7 +122,8 @@ function drawCircle() {
     const playerWidth = myCircle.radius * 2;
     const playerHeight = myCircle.radius * 2;
     ctx.drawImage(myCircle.crosshair, myCircle.x - myCircle.radius, myCircle.y - myCircle.radius, playerWidth, playerHeight);
-    
+
+    HitorMiss();
     requestAnimationFrame(drawCircle); // Keep the animation loop going
 }
 
@@ -151,11 +163,14 @@ function shoot(event) {
     const mouseX = event.offsetX;
     const mouseY = event.offsetY;
 
+    clickCounter++;
+
     targets.forEach((target, index) => {
         const scale = 1 / target.z;
         if (Math.hypot(mouseX - target.x, mouseY - target.y) < target.radius * scale) {
             console.log("Hit target!", target);
 
+            clickHit++;
             target.hit = true;
             target.currentFrame = 0; // Start the shrinking animation from the first frame
         }
