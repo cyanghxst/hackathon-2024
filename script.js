@@ -23,7 +23,6 @@ targetImages.forEach((path, index) => {
 
 $("myCanvas").addEventListener("mousemove", getCoordinates);
 $("myCanvas").addEventListener("click", shoot);
-document.addEventListener("keydown", changeRadius);
 
 // Correct the initialization: call drawCircle only after the image loads
 backgroundImage.onload = initializeGame;
@@ -42,16 +41,16 @@ let myCircle = {
 
 };
 
-// let duckCount = 5;
-// const duckFrames = [];
-// let currentDuckFrame = 0;
-// let duckAnimating = false; 
+let duckCount = 5;
+const duckFrames = [];
+let currentDuckFrame = 0;
+let duckAnimating = false; 
 
-// for (let i = 0; i <= duckCount; i++) {
-//     const duckImg = new Image();
-//     duckImg.src = "./images/duck" + i + ".png";
-//     duckFrames.push(duckImg);
-// }
+for (let i = 0; i <= duckCount; i++) {
+    const duckImg = new Image();
+    duckImg.src = "./images/duck" + i + ".png";
+    duckFrames.push(duckImg);
+}
 
 let targets = [
     { x: 612, y: 110, radius: 100, z: 1, color: "red" },
@@ -82,19 +81,6 @@ function drawCircle() {
     const crosshairWidth = myCircle.radius * 3;
     const crosshairHeight = myCircle.radius * 3;
     ctx.drawImage(myCircle.crosshair, myCircle.x - myCircle.radius, myCircle.y - myCircle.radius, crosshairWidth, crosshairHeight);
-
-    // // Activate duck Animation
-     // If the duck animation is active, cycle through duck frames
-    //  if (duckAnimating) {
-    //     const duckFrame = duckFrames[currentDuckFrame];
-    //     ctx.drawImage(duckFrame, 300, 200, 100, 100); // Example fixed duck position
-
-    //     // Cycle through duck frames over time
-    //     currentDuckFrame++;
-    //     if (currentDuckFrame >= duckFrames.length) {
-    //         currentDuckFrame = 0; // Reset to loop the animation
-    //     }
-    // }
    
     requestAnimationFrame(drawCircle);
 
@@ -124,17 +110,7 @@ function getCoordinates(event) {
     myCircle.y = y;
 }
 
-function changeRadius(event) {
-    if (event.key === "ArrowUp") {
-        myCircle.radius++;
-        drawCircle();
-    }
 
-    if (event.key === "ArrowDown") {
-        myCircle.radius--;
-        drawCircle();
-    }
-}
 let duckActivate;
 function shoot(event) {
     const mouseX = event.offsetX;
