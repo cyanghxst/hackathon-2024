@@ -1,5 +1,5 @@
 let backgroundImage = new Image();
-backgroundImage.src = "./images/bgTest.png"; // Ensure the path is correct
+backgroundImage.src = "./images/shootinggallery.png";
 
 const $ = id => document.getElementById(id);
 const ctx = $("myCanvas").getContext("2d");
