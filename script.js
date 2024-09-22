@@ -4,18 +4,29 @@ backgroundImage.src = "./images/shootinggallery.png";
 const $ = id => document.getElementById(id);
 const ctx = $("myCanvas").getContext("2d");
 
-const targetImage = [];
-const targetImages = [
-    "./images/duck.png",
-    "./images/duck.png",
-    "./images/duck.png",
+const shrinkingAnimation = [
+    new Image(),
+    new Image(),
+    new Image(),
+    new Image()
 ];
 
-targetImages.forEach((path, index) => {
-    const image = new Image();
-    image.src = path;
-    targetImages[index] = image;
-});
+// Load the shrinking animation frames
+shrinkingAnimation[0].src = "./images/duck_animation1.png";
+shrinkingAnimation[1].src = "./images/duck_animation2.png";
+shrinkingAnimation[2].src = "./images/duck_animation3.png";
+shrinkingAnimation[3].src = "./images/duck_animation4.png";
+
+const targetImages = [
+    new Image(),
+    new Image(),
+    new Image()
+];
+
+// Load the normal duck images for targets
+targetImages[0].src = "./images/duck.png";
+targetImages[1].src = "./images/duck.png";
+targetImages[2].src = "./images/duck.png";
 
 $("myCanvas").addEventListener("mousemove", getCoordinates);
 $("myCanvas").addEventListener("click", shoot);
@@ -37,9 +48,9 @@ let myCircle = {
 };
 
 let targets = [
-    { x: 612, y: 110, radius: 100, z: 1, color: "red", speed: 2, direction: 1, hit: false, opacity: 1, scale: 1 },
-    { x: 612, y: 250, radius: 100, z: 1, color: "blue", speed: 3, direction: 1, hit: false, opacity: 1, scale: 1 },
-    { x: 612, y: 380, radius: 100, z: 1, color: "green", speed: 4, direction: 1, hit: false, opacity: 1, scale: 1 },
+    { x: 612, y: 110, radius: 100, z: 1, color: "red", speed: 2, direction: 1, hit: false, animationDone: false, currentFrame: 0 },
+    { x: 612, y: 250, radius: 100, z: 1, color: "blue", speed: 3, direction: 1, hit: false, animationDone: false, currentFrame: 0 },
+    { x: 612, y: 380, radius: 100, z: 1, color: "green", speed: 4, direction: 1, hit: false, animationDone: false, currentFrame: 0 },
 ];
 
 // Function to initialize the game (you can populate targets randomly here)
@@ -55,18 +66,45 @@ function drawCircle() {
 
     // Move targets horizontally and draw them as images
     targets.forEach((target, index) => {
-        // Update target's position based on its speed and direction
-        target.x += target.speed * target.direction;
+        if (!target.hit) {
+            // Update target's position based on its speed and direction
+            target.x += target.speed * target.direction;
 
-        // Reverse direction if the target hits the canvas boundaries
-        if (target.x - target.radius < 300 || target.x + target.radius > width - 300) {
-            target.direction *= -1;
+            // Reverse direction if the target hits the canvas boundaries
+            if (target.x - target.radius < 300 || target.x + target.radius > width - 300) {
+                target.direction *= -1;
+            }
+
+            // Draw the normal target image
+            const img = targetImages[index]; // Get the corresponding image
+            const scale = 1 / target.z;
+            ctx.drawImage(img, target.x - (target.radius * scale) / 2, target.y - (target.radius * scale) / 2, target.radius * scale, target.radius * scale);
+
+        } else if (!target.animationDone) {
+            // Animate the shrinking and fading of hit targets
+            const img = shrinkingAnimation[target.currentFrame]; // Get current shrinking frame image
+            const scale = 1 / target.z;
+
+            ctx.drawImage(
+                img, 
+                target.x - (target.radius * scale) / 2, 
+                target.y - (target.radius * scale) / 2, 
+                target.radius * scale, 
+                target.radius * scale
+            );
+
+            target.currentFrame++; // Move to next frame
+
+            // Check if the animation has finished
+            if (target.currentFrame >= shrinkingAnimation.length) {
+                target.animationDone = true; // Animation is done
+            }
         }
 
-        // Draw target
-        const scale = 1 / target.z;
-        const img = targetImages[index]; // Get the corresponding image
-        ctx.drawImage(img, target.x - (target.radius * scale) / 2, target.y - (target.radius * scale) / 2, target.radius * scale, target.radius * scale);
+        // Remove the target after animation is done
+        if (target.animationDone) {
+            targets.splice(index, 1);
+        }
     });
 
     // Draw player circle
@@ -118,8 +156,8 @@ function shoot(event) {
         if (Math.hypot(mouseX - target.x, mouseY - target.y) < target.radius * scale) {
             console.log("Hit target!", target);
 
-            targets.splice(index, 1); // Remove the target
-            drawCircle();
+            target.hit = true;
+            target.currentFrame = 0; // Start the shrinking animation from the first frame
         }
     });
 }
