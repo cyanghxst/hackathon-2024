@@ -69,9 +69,9 @@ function displayStats() {
 
     ctx.font = "20px Helvetica";
     ctx.fillStyle = "white";
-    ctx.fillText(`Hits: ${clickHit}`, 5, 650);
-    ctx.fillText(`Clicks: ${clickCounter}`, 5, 680);
-    ctx.fillText(`Ammo: ${ammoCount}`, 5, 710); // Display ammo count
+    ctx.fillText(`Hits: ${clickHit}`, 15, 640);
+    ctx.fillText(`Clicks: ${clickCounter}`, 15, 670);
+    ctx.fillText(`Ammo: ${ammoCount}`, 15, 700); // Display ammo count
     // ctx.fillText(`Accuracy: ${accuracy}%`, 5, 710); // Display ammo count
 
     // Display error message if ammo runs out
