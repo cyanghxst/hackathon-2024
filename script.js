@@ -6,9 +6,9 @@ const ctx = $("myCanvas").getContext("2d");
 
 const targetImage = [];
 const targetImages = [
-    "./images/bottle.png",
-    "./images/bottle.png",
-    "./images/bottle.png"
+    "./images/duck.png",
+    "./images/duck.png",
+    "./images/duck.png",
 ];
 
 targetImages.forEach((path, index) => {
