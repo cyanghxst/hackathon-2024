@@ -15,6 +15,9 @@ const shrinkingAnimation = [
 let clickCounter = 0;
 let clickHit = 0;
 
+// Ammo
+let ammoCount = 5; // Set the initial ammo count
+
 // Load the shrinking animation frames
 shrinkingAnimation[0].src = "./images/duck_animation1.png";
 shrinkingAnimation[1].src = "./images/duck_animation2.png";
@@ -61,11 +64,28 @@ function initializeGame() {
     drawCircle(); // Call drawCircle after targets are initialized
 }
 
-function displayCounters() {
-    ctx.font = "40px Helvetica";
+function displayStats() {
+    let accuracy = clickHit / clickCounter * 100;
+
+    ctx.font = "20px Helvetica";
     ctx.fillStyle = "white";
     ctx.fillText(`Hits: ${clickHit}`, 5, 650);
-    ctx.fillText(`Clicks: ${clickCounter}`, 5, 700);    
+    ctx.fillText(`Clicks: ${clickCounter}`, 5, 680);
+    ctx.fillText(`Ammo: ${ammoCount}`, 5, 710); // Display ammo count
+    // ctx.fillText(`Accuracy: ${accuracy}%`, 5, 710); // Display ammo count
+
+    // Display error message if ammo runs out
+    if (ammoCount <= 0) {
+        ctx.font = "20px Helvetica";
+        ctx.fillStyle = "red";
+        ctx.fillText("Out of Ammo!", width / 2 - 50, height / 2); // Center the error message
+    }
+
+    if (clickHit == 3) {
+        ctx.font = "20px Helvetica";
+        ctx.fillStyle = "white";
+        ctx.fillText(`Accuracy: ${accuracy}%`, width / 2 - 50, height / 2 + 30); // Center the error message
+    }
 }
 
 function drawCircle() {
@@ -89,6 +109,7 @@ function drawCircle() {
             const img = targetImages[index]; // Get the corresponding image
             const scale = 1 / target.z;
             ctx.drawImage(img, target.x - (target.radius * scale) / 2, target.y - (target.radius * scale) / 2, target.radius * scale, target.radius * scale);
+
         } else if (!target.animationDone) {
             // Animate the shrinking and fading of hit targets
             const img = shrinkingAnimation[target.currentFrame]; // Get current shrinking frame image
@@ -120,7 +141,7 @@ function drawCircle() {
     const playerHeight = myCircle.radius * 2;
     ctx.drawImage(myCircle.crosshair, myCircle.x - myCircle.radius, myCircle.y - myCircle.radius, playerWidth, playerHeight);
 
-    displayCounters();
+    displayStats(); // Update stats on the canvas
     requestAnimationFrame(drawCircle); // Keep the animation loop going
 }
 
@@ -148,16 +169,21 @@ function shoot(event) {
     const mouseX = event.offsetX;
     const mouseY = event.offsetY;
 
-    clickCounter++; // Increment click counter
+    // Only shoot if ammo is available
+    if (ammoCount > 0) {
+        clickCounter++;
+        ammoCount--; // Decrement ammo count
 
-    targets.forEach((target, index) => {
-        const scale = 1 / target.z;
-        if (Math.hypot(mouseX - target.x, mouseY - target.y) < target.radius * scale) {
-            console.log("Hit target!", target);
-
-            clickHit++; // Increment hit counter
-            target.hit = true;
-            target.currentFrame = 0; // Start the shrinking animation from the first frame
-        }
-    });
+        targets.forEach((target, index) => {
+            const scale = 1 / target.z;
+            if (Math.hypot(mouseX - target.x, mouseY - target.y) < target.radius * scale) {
+                console.log("Hit target!", target);
+                clickHit++;
+                target.hit = true;
+                target.currentFrame = 0; // Start the shrinking animation from the first frame
+            }
+        });
+    } else {
+        console.log("Out of ammo!");
+    }
 }
