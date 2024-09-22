@@ -1,5 +1,7 @@
 let backgroundImage = new Image();
-backgroundImage.src = "./images/bgTest.png"; // Ensure the path is correct
+backgroundImage.src = "./images/shootinggallery.png"; // Ensure the path is correct
+
+
 
 const $ = id => document.getElementById(id);
 const ctx = $("myCanvas").getContext("2d");
@@ -7,9 +9,9 @@ const ctx = $("myCanvas").getContext("2d");
 
 const targetImage = [];
 const targetImages = [
-    "./images/bottle.png",
-    "./images/bottle.png",
-    "./images/bottle.png"
+    "./images/duck.png",
+    "./images/duck.png",
+    "./images/duck.png"
 ];
 
 targetImages.forEach((path, index) => {
@@ -37,9 +39,19 @@ let myCircle = {
     y: 200,
     radius: 20,
     crosshair: crosshair,
-  
+
 };
 
+// let duckCount = 5;
+// const duckFrames = [];
+// let currentDuckFrame = 0;
+// let duckAnimating = false; 
+
+// for (let i = 0; i <= duckCount; i++) {
+//     const duckImg = new Image();
+//     duckImg.src = "./images/duck" + i + ".png";
+//     duckFrames.push(duckImg);
+// }
 
 let targets = [
     { x: 612, y: 110, radius: 100, z: 1, color: "red" },
@@ -64,21 +76,37 @@ function drawCircle() {
         const img = targetImages[index]; // Get the corresponding image
         ctx.drawImage(img, target.x - (target.radius * scale) / 2, target.y - (target.radius * scale) / 2, target.radius * scale, target.radius * scale);
     });
-
-    // Draw player circle
-    const playerWidth = myCircle.radius * 2;
-    const playerHeight = myCircle.radius * 2;
-    ctx.drawImage(myCircle.crosshair, myCircle.x - myCircle.radius, myCircle.y - myCircle.radius, playerWidth, playerHeight);
     
-    requestAnimationFrame(drawCircle);
-}
-let imagesLoaded = 0;
 
+    // Draw Crosshair circle
+    const crosshairWidth = myCircle.radius * 3;
+    const crosshairHeight = myCircle.radius * 3;
+    ctx.drawImage(myCircle.crosshair, myCircle.x - myCircle.radius, myCircle.y - myCircle.radius, crosshairWidth, crosshairHeight);
+
+    // // Activate duck Animation
+     // If the duck animation is active, cycle through duck frames
+    //  if (duckAnimating) {
+    //     const duckFrame = duckFrames[currentDuckFrame];
+    //     ctx.drawImage(duckFrame, 300, 200, 100, 100); // Example fixed duck position
+
+    //     // Cycle through duck frames over time
+    //     currentDuckFrame++;
+    //     if (currentDuckFrame >= duckFrames.length) {
+    //         currentDuckFrame = 0; // Reset to loop the animation
+    //     }
+    // }
+   
+    requestAnimationFrame(drawCircle);
+
+    
+}
+
+let imagesLoaded = 0;
 targetImages.forEach(img => {
     img.onload = () => {
         imagesLoaded++;
         if (imagesLoaded === targetImages.length) {
-            initializeGame(); // Start the game only when all images are loaded
+            initializeGame();
         }
     };
     img.src = img.src; // Start loading the image
@@ -107,7 +135,7 @@ function changeRadius(event) {
         drawCircle();
     }
 }
-
+let duckActivate;
 function shoot(event) {
     const mouseX = event.offsetX;
     const mouseY = event.offsetY;
@@ -118,7 +146,6 @@ function shoot(event) {
             console.log("Hit target!", target);
 
             targets.splice(index, 1); // Remove the target
-            drawCircle();
         }
     });
 }
