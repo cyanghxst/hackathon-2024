@@ -15,7 +15,6 @@ const shrinkingAnimation = [
 let clickCounter = 0;
 let clickHit = 0;
 
-
 // Load the shrinking animation frames
 shrinkingAnimation[0].src = "./images/duck_animation1.png";
 shrinkingAnimation[1].src = "./images/duck_animation2.png";
@@ -35,7 +34,6 @@ targetImages[2].src = "./images/duck.png";
 
 $("myCanvas").addEventListener("mousemove", getCoordinates);
 $("myCanvas").addEventListener("click", shoot);
-document.addEventListener("keydown", changeRadius);
 
 backgroundImage.onload = initializeGame;
 
@@ -58,15 +56,15 @@ let targets = [
     { x: 612, y: 380, radius: 100, z: 1, color: "green", speed: 4, direction: 1, hit: false, animationDone: false, currentFrame: 0 },
 ];
 
-// Function to initialize the game (you can populate targets randomly here)
+// Function to initialize the game
 function initializeGame() {
     drawCircle(); // Call drawCircle after targets are initialized
 }
 
-function HitorMiss() {
+function displayCounters() {
     ctx.font = "40px Helvetica";
     ctx.fillStyle = "white";
-    ctx.fillText(`Hit: ${clickHit}`, 5, 650);
+    ctx.fillText(`Hits: ${clickHit}`, 5, 650);
     ctx.fillText(`Clicks: ${clickCounter}`, 5, 700);    
 }
 
@@ -91,7 +89,6 @@ function drawCircle() {
             const img = targetImages[index]; // Get the corresponding image
             const scale = 1 / target.z;
             ctx.drawImage(img, target.x - (target.radius * scale) / 2, target.y - (target.radius * scale) / 2, target.radius * scale, target.radius * scale);
-
         } else if (!target.animationDone) {
             // Animate the shrinking and fading of hit targets
             const img = shrinkingAnimation[target.currentFrame]; // Get current shrinking frame image
@@ -123,7 +120,7 @@ function drawCircle() {
     const playerHeight = myCircle.radius * 2;
     ctx.drawImage(myCircle.crosshair, myCircle.x - myCircle.radius, myCircle.y - myCircle.radius, playerWidth, playerHeight);
 
-    HitorMiss();
+    displayCounters();
     requestAnimationFrame(drawCircle); // Keep the animation loop going
 }
 
@@ -147,30 +144,18 @@ function getCoordinates(event) {
     myCircle.y = y;
 }
 
-function changeRadius(event) {
-    if (event.key === "ArrowUp") {
-        myCircle.radius++;
-        drawCircle();
-    }
-
-    if (event.key === "ArrowDown") {
-        myCircle.radius--;
-        drawCircle();
-    }
-}
-
 function shoot(event) {
     const mouseX = event.offsetX;
     const mouseY = event.offsetY;
 
-    clickCounter++;
+    clickCounter++; // Increment click counter
 
     targets.forEach((target, index) => {
         const scale = 1 / target.z;
         if (Math.hypot(mouseX - target.x, mouseY - target.y) < target.radius * scale) {
             console.log("Hit target!", target);
 
-            clickHit++;
+            clickHit++; // Increment hit counter
             target.hit = true;
             target.currentFrame = 0; // Start the shrinking animation from the first frame
         }
