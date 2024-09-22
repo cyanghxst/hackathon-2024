@@ -37,9 +37,9 @@ let myCircle = {
 };
 
 let targets = [
-    { x: 612, y: 110, radius: 100, z: 1, color: "red", speed: 2, direction: 1 },
-    { x: 612, y: 250, radius: 100, z: 1, color: "blue", speed: 3, direction: 1 },
-    { x: 612, y: 380, radius: 100, z: 1, color: "green", speed: 4, direction: 1 },
+    { x: 612, y: 110, radius: 100, z: 1, color: "red", speed: 2, direction: 1, hit: false, opacity: 1, scale: 1 },
+    { x: 612, y: 250, radius: 100, z: 1, color: "blue", speed: 3, direction: 1, hit: false, opacity: 1, scale: 1 },
+    { x: 612, y: 380, radius: 100, z: 1, color: "green", speed: 4, direction: 1, hit: false, opacity: 1, scale: 1 },
 ];
 
 // Function to initialize the game (you can populate targets randomly here)
